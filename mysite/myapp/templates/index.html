@@ -1,10 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 {{ variable }}    
 <ul>
     {% for sugg in some_list %}
-        <li class="button">{{ sugg }}</li>
+        <li>{{ sugg }}</li>
     {% endfor %}
 </ul>
 <form action="/" method="post">
@@ -12,4 +13,26 @@
 {{ form }}
 <input type="submit" class="button" value="Submit">
 </form>
+<div id="app">
+    {% verbatim %}
+    {{ message }}
+    {% endverbatim %}
+</div>
+<div id="app-4">
+<ol>
+    <li v-for="sugg in suggestions">
+            {% verbatim %}
+
+    {{ sugg.suggestion }}
+    {% endverbatim %}
+
+    </li>
+</ol>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- development version, includes helpful console warnings -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="{% static "js/myvue.js" %}"></script>
 {% endblock %}
