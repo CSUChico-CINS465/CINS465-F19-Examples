@@ -2,12 +2,32 @@
 {% load static %}
 
 {% block content %}
-{{ variable }}    
+{{ variable }} 
+{% if user.is_authenticated %}
+<a href="/logout/" class="button">Logout</a>
+{% endif %}
+<div id="app-4"> 
+<span v-if="seen">
 <ul>
     {% for sugg in some_list %}
         <li>{{ sugg }}</li>
     {% endfor %}
 </ul>
+</span> 
+<span v-if="unseen">
+
+    <ul>
+        <li v-for="sugg in suggestions">
+                {% verbatim %}
+    
+        {{ sugg.suggestion }}
+        {% endverbatim %}
+    
+        </li>
+    </ul>
+</div>
+</span> 
+{% if user.is_authenticated %}
 <form action="/" method="post">
 {% csrf_token %}
 {{ form }}
@@ -18,17 +38,7 @@
     {{ message }}
     {% endverbatim %}
 </div>
-<div id="app-4">
-<ol>
-    <li v-for="sugg in suggestions">
-            {% verbatim %}
-
-    {{ sugg.suggestion }}
-    {% endverbatim %}
-
-    </li>
-</ol>
-</div>
+{% endif %}
 {% endblock %}
 {% block scripts %}
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>

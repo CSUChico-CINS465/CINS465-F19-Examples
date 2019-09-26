@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 
 from . import models
 from . import forms
@@ -21,11 +22,12 @@ def index(request,page=0):
         "variable":"Hello World",
         "title":"Index",
         "form":form_instance,
-        "some_list":value[page*5:(page*5+5)]
+        "some_list":value
     }
     return render(request, "index.html", context=context)
 
 @csrf_exempt
+@login_required(login_url='/login/')
 def suggestions_view(request):
     if request.method == "GET":
         suggestion_query=models.Suggestion.objects.all()
@@ -35,3 +37,7 @@ def suggestions_view(request):
         return JsonResponse(suggestion_list)
     else:
         return HttpResponse("Unsupported HTTP Method")
+
+def logout_view(request):
+    logout(request)
+    return redirect("/login/")
