@@ -5,12 +5,14 @@
 {{ variable }} 
 {% if user.is_authenticated %}
 <a href="/logout/" class="button">Logout</a>
+{% else %}
+<a href="/login/" class="button">Login</a>
 {% endif %}
 <div id="app-4"> 
 <span v-if="seen">
 <ul>
     {% for sugg in some_list %}
-        <li>{{ sugg }}</li>
+        <li>{{ sugg.suggestion }} - {{ sugg.author.username }}</li>
     {% endfor %}
 </ul>
 </span> 
@@ -20,7 +22,7 @@
         <li v-for="sugg in suggestions">
                 {% verbatim %}
     
-        {{ sugg.suggestion }}
+        {{ sugg.suggestion }} - {{ sugg.author }}
         {% endverbatim %}
     
         </li>
