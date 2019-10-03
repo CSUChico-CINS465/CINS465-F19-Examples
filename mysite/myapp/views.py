@@ -3,14 +3,14 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 
 from . import models
 from . import forms
 
 # Create your views here.
-def index(request,page=0):
-    if request.method=="POST":
+def index(request, page=0):
+    if request.method == "POST":
         if request.user.is_authenticated:
             form_instance = forms.SuggestionForm(request.POST)
             if form_instance.is_valid():
@@ -22,8 +22,8 @@ def index(request,page=0):
             form_instance = forms.SuggestionForm()
     else:
         form_instance = forms.SuggestionForm()
-    value=models.Suggestion.objects.all()
-    context={
+    value = models.Suggestion.objects.all()
+    context = {
         "variable":"Hello World",
         "title":"Index",
         "form":form_instance,
@@ -35,7 +35,7 @@ def index(request,page=0):
 @login_required(login_url='/login/')
 def suggestions_view(request):
     if request.method == "GET":
-        suggestion_query=models.Suggestion.objects.all()
+        suggestion_query = models.Suggestion.objects.all()
         suggestion_list = {"suggestions":[]}
         for s_q in suggestion_query:
             suggestion_list["suggestions"] += [{
@@ -43,8 +43,7 @@ def suggestions_view(request):
                 "author":s_q.author.username
                 }]
         return JsonResponse(suggestion_list)
-    else:
-        return HttpResponse("Unsupported HTTP Method")
+    return HttpResponse("Unsupported HTTP Method")
 
 def logout_view(request):
     logout(request)

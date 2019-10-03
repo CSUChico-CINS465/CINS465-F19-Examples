@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 
 class SuggestionForm(forms.Form):
-    suggestion = forms.CharField(label='Suggestion', max_length=240,validators=[validate_slug])
+    suggestion = forms.CharField(label='Suggestion', max_length=240, validators=[validate_slug])
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(
