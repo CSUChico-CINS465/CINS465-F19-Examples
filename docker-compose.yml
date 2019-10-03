@@ -4,6 +4,7 @@ version: '3'
 services:
   web:
     build: .
+   #  image: registry.gitlab.com/csuchico/csuc-cins465/cins465-f19-examples:latest
     volumes:
        - .:/code
     ports:
