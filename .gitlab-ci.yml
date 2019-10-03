@@ -38,7 +38,7 @@ test:
   script:
     - cd /code
     - coverage --version
-    - coverage run --source='.' ./manage.py test
+    - coverage run --source='.' ./mysite/manage.py test
     - coverage report --skip-covered
 
 #Create latest docker container if all the tests/lint passes on master
