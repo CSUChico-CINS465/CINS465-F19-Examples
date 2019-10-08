@@ -12,7 +12,15 @@
 <span v-if="seen">
 <ul>
     {% for sugg in some_list %}
-        <li>{{ sugg.suggestion }} - {{ sugg.author.username }}</li>
+        <li>
+            {{ sugg.suggestion }} - {{ sugg.author.username }} - {{ sugg.created_on }}
+            <ul>
+                {% for comm in sugg.comments %}
+                    <li>{{ comm.comment }} - {{ comm.author.username }} - {{ comm.created_on }} - <a data-method='delete' href="/comment/{{ comm.id }}/">delete</a></li>
+                {% endfor %}
+                <li><a href="/comment/{{ sugg.id }}/">comment</a></li>
+            </ul>
+        </li>
     {% endfor %}
 </ul>
 </span> 
@@ -22,9 +30,20 @@
         <li v-for="sugg in suggestions">
                 {% verbatim %}
     
-        {{ sugg.suggestion }} - {{ sugg.author }}
+        {{ sugg.suggestion }} - {{ sugg.author }} - {{ sugg.created_on }}
         {% endverbatim %}
-    
+        <ul>
+            <li v-for="comm in sugg.comments">
+                    {% verbatim %}
+        
+            {{ comm.comment }} - {{ comm.author }} - {{ comm.created_on }} - <a v-bind:action="DELETE" v-bind:href="'/comment/'+ comm.id+'/'">delete</a>
+            {% endverbatim %}
+        
+            </li>
+            {% verbatim %}
+            <li><a v-bind:href="'/comment/'+ sugg.id+'/'">comment</a></li>
+            {% endverbatim %}
+        </ul>
         </li>
     </ul>
 </div>
@@ -35,11 +54,11 @@
 {{ form }}
 <input type="submit" class="button" value="Submit">
 </form>
-<div id="app">
+<!-- <div id="app">
     {% verbatim %}
     {{ message }}
     {% endverbatim %}
-</div>
+</div> -->
 {% endif %}
 {% endblock %}
 {% block scripts %}

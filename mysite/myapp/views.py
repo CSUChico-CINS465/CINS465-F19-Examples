@@ -22,12 +22,30 @@ def index(request, page=0):
             form_instance = forms.SuggestionForm()
     else:
         form_instance = forms.SuggestionForm()
-    value = models.Suggestion.objects.all()
+    suggestion_query = models.Suggestion.objects.all()
+    suggestion_list = {"suggestions":[]}
+    for s_q in suggestion_query:
+        comment_query = models.Comment.objects.filter(suggestion=s_q)
+        comment_list = []
+        for c_q in comment_query:
+            comment_list += [{
+            "comment":c_q.comment,
+            "author":c_q.author.username,
+            "created_on":c_q.created_on,
+            "id":c_q.id
+            }]
+        suggestion_list["suggestions"] += [{
+            "id":s_q.id,
+            "suggestion":s_q.suggestion,
+            "author":s_q.author.username,
+            "created_on":s_q.created_on,
+            "comments":comment_list
+            }]
     context = {
         "variable":"Hello World",
         "title":"Index",
         "form":form_instance,
-        "some_list":value
+        "some_list":suggestion_list["suggestions"]
     }
     return render(request, "index.html", context=context)
 
@@ -38,12 +56,47 @@ def suggestions_view(request):
         suggestion_query = models.Suggestion.objects.all()
         suggestion_list = {"suggestions":[]}
         for s_q in suggestion_query:
+            comment_query = models.Comment.objects.filter(suggestion=s_q)
+            comment_list = []
+            for c_q in comment_query:
+                comment_list += [{
+                "comment":c_q.comment,
+                "author":c_q.author.username,
+                "created_on":c_q.created_on,
+                "id":c_q.id
+                }]
             suggestion_list["suggestions"] += [{
+                "id":s_q.id,
                 "suggestion":s_q.suggestion,
-                "author":s_q.author.username
+                "author":s_q.author.username,
+                "created_on":s_q.created_on,
+                "comments":comment_list
                 }]
         return JsonResponse(suggestion_list)
     return HttpResponse("Unsupported HTTP Method")
+
+@login_required(login_url='/login/')
+def comments_view(request, instance_id):
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            form_instance = forms.CommentForm(request.POST)
+            if form_instance.is_valid():
+                new_comm = form_instance.save(request=request, sugg_id=instance_id)
+                return redirect("/")
+        else:
+            form_instance = forms.CommentForm()
+    elif request.method == "DELETE":
+        print("Should delete the comment here")
+        return redirect("/")
+    else:
+        form_instance = forms.CommentForm()
+    context = {
+        "title":"Comment Form",
+        "form":form_instance,
+        "sugg_id":instance_id
+    }
+    return render(request, "comment.html", context=context)
+
 
 def logout_view(request):
     logout(request)
