@@ -28,11 +28,15 @@ def index(request, page=0):
         comment_query = models.Comment.objects.filter(suggestion=s_q)
         comment_list = []
         for c_q in comment_query:
+            can_delete=False
+            if request.user == c_q.author:
+                can_delete=True
             comment_list += [{
             "comment":c_q.comment,
             "author":c_q.author.username,
             "created_on":c_q.created_on,
-            "id":c_q.id
+            "id":c_q.id,
+            "delete":can_delete
             }]
         suggestion_list["suggestions"] += [{
             "id":s_q.id,
@@ -59,11 +63,15 @@ def suggestions_view(request):
             comment_query = models.Comment.objects.filter(suggestion=s_q)
             comment_list = []
             for c_q in comment_query:
+                can_delete=False
+                if request.user == c_q.author:
+                    can_delete=True
                 comment_list += [{
                 "comment":c_q.comment,
                 "author":c_q.author.username,
                 "created_on":c_q.created_on,
-                "id":c_q.id
+                "id":c_q.id,
+                "delete":can_delete
                 }]
             suggestion_list["suggestions"] += [{
                 "id":s_q.id,
@@ -76,7 +84,13 @@ def suggestions_view(request):
     return HttpResponse("Unsupported HTTP Method")
 
 @login_required(login_url='/login/')
-def comments_view(request, instance_id):
+def comments_view(request, instance_id, delete=0):
+    if delete==1:
+        print("Should delete the comment here")
+        instance = models.Comment.objects.get(id=instance_id)
+        if request.user == instance.author:
+            instance.delete()
+        return redirect("/")
     if request.method == "POST":
         if request.user.is_authenticated:
             form_instance = forms.CommentForm(request.POST)
@@ -85,9 +99,6 @@ def comments_view(request, instance_id):
                 return redirect("/")
         else:
             form_instance = forms.CommentForm()
-    elif request.method == "DELETE":
-        print("Should delete the comment here")
-        return redirect("/")
     else:
         form_instance = forms.CommentForm()
     context = {

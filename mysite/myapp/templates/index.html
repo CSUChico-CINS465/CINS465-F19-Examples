@@ -4,50 +4,60 @@
 {% block content %}
 {{ variable }} 
 {% if user.is_authenticated %}
+<h1>Hi {{ request.user.username }}</h1>
 <a href="/logout/" class="button">Logout</a>
 {% else %}
 <a href="/login/" class="button">Login</a>
 {% endif %}
-<div id="app-4"> 
-<span v-if="seen">
-<ul>
-    {% for sugg in some_list %}
-        <li>
-            {{ sugg.suggestion }} - {{ sugg.author.username }} - {{ sugg.created_on }}
-            <ul>
-                {% for comm in sugg.comments %}
-                    <li>{{ comm.comment }} - {{ comm.author.username }} - {{ comm.created_on }} - <a data-method='delete' href="/comment/{{ comm.id }}/">delete</a></li>
-                {% endfor %}
-                <li><a href="/comment/{{ sugg.id }}/">comment</a></li>
-            </ul>
-        </li>
-    {% endfor %}
-</ul>
-</span> 
-<span v-if="unseen">
 
-    <ul>
-        <li v-for="sugg in suggestions">
-                {% verbatim %}
-    
-        {{ sugg.suggestion }} - {{ sugg.author }} - {{ sugg.created_on }}
-        {% endverbatim %}
-        <ul>
-            <li v-for="comm in sugg.comments">
-                    {% verbatim %}
-        
-            {{ comm.comment }} - {{ comm.author }} - {{ comm.created_on }} - <a v-bind:action="DELETE" v-bind:href="'/comment/'+ comm.id+'/'">delete</a>
-            {% endverbatim %}
-        
-            </li>
+      
+<div class="grid-x grid-padding-x">
+    <!-- <div class="large-4 medium-4 small-12 cell"></div> -->
+    <div class="large-10 medium-10 small-12 large-offset-1 medium-offset-1 cell">      
+  
+<div id="app-4"> 
+<span v-if="unseen">
+    <div v-for="sugg in suggestions">
+        <div class="card-info info">
             {% verbatim %}
-            <li><a v-bind:href="'/comment/'+ sugg.id+'/'">comment</a></li>
+            <div class="card-info-label">
+                <div class="card-info-label-text">
+                {{ sugg.author }}
+                </div>
+            </div>
+            <div class="card-info-content">
+                <h3 class="lead">{{ sugg.suggestion }}</h3>
+                <p>Created on: {{ sugg.created_on }}</p>
+                <a v-bind:href="'/comment/'+ sugg.id+'/'" class="button">comment</a>
+            </div>
             {% endverbatim %}
-        </ul>
-        </li>
-    </ul>
+        </div>
+        <div class="grid-x grid-padding-x">
+            <!-- <div class="large-4 medium-4 small-12 cell"></div> -->
+            <div class="large-11 medium-11 small-12 large-offset-1 medium-offset-1 cell">      
+                    <div v-for="comm in sugg.comments">
+                            <div class="card-info info">
+                                {% verbatim %}
+                                <div class="card-info-label">
+                                    <div class="card-info-label-text">
+                                    {{ comm.author }}
+                                    </div>
+                                </div>
+                                <div class="card-info-content">
+                                    <h3 class="lead">{{ comm.comment }}</h3>
+                                    <p>Created on: {{ comm.created_on }}</p>
+                                    <span v-if="comm.delete"><a v-bind:href="'/comment/'+ comm.id+'/1/'" class="alert button">delete</a></span>
+                                </div>
+                                {% endverbatim %}
+                            </div>
+                        </div>
+            </div>
+        </div>
+    </div>
+        
 </div>
 </span> 
+</div>
 {% if user.is_authenticated %}
 <form action="/" method="post">
 {% csrf_token %}
