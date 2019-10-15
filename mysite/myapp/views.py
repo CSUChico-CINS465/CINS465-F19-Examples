@@ -57,7 +57,7 @@ def index(request, page=0):
 @login_required(login_url='/login/')
 def suggestions_view(request):
     if request.method == "GET":
-        suggestion_query = models.Suggestion.objects.all()
+        suggestion_query = models.Suggestion.objects.all().order_by('-created_on')
         suggestion_list = {"suggestions":[]}
         for s_q in suggestion_query:
             comment_query = models.Comment.objects.filter(suggestion=s_q)
@@ -73,15 +73,39 @@ def suggestions_view(request):
                 "id":c_q.id,
                 "delete":can_delete
                 }]
+            url = ""
+            if not str(s_q.image)=="":
+                url=s_q.image.url
             suggestion_list["suggestions"] += [{
                 "id":s_q.id,
                 "suggestion":s_q.suggestion,
                 "author":s_q.author.username,
                 "created_on":s_q.created_on,
-                "comments":comment_list
+                "comments":comment_list,
+                "image":url,
+                "image_description":s_q.image_description
                 }]
         return JsonResponse(suggestion_list)
     return HttpResponse("Unsupported HTTP Method")
+
+@login_required(login_url='/login/')
+def suggestion_form_view(request):
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            form_instance = forms.SuggestionForm(request.POST, request.FILES)
+            if form_instance.is_valid():
+                new_sugge = form_instance.save(request=request)
+                return redirect("/")
+        else:
+            return redirect("/")
+    else:
+        form_instance = forms.SuggestionForm()
+    context = {
+        "title":"Suggestion Form",
+        "form":form_instance
+    }
+    return render(request, "suggestion.html", context=context)
+
 
 @login_required(login_url='/login/')
 def comments_view(request, instance_id, delete=0):

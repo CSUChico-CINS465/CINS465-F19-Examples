@@ -8,6 +8,19 @@ from . import models
 
 class SuggestionForm(forms.Form):
     suggestion = forms.CharField(label='Suggestion', max_length=240, validators=[validate_slug])
+    image = forms.ImageField(label="Image File")
+    image_description = forms.CharField(label='Image Description', max_length=240)
+    
+    def save(self, request, commit=True):
+        new_sugg = models.Suggestion(
+            suggestion=self.cleaned_data["suggestion"],
+            image=self.cleaned_data["image"],
+            image_description=self.cleaned_data["image_description"],
+            author=request.user
+        )
+        if commit:
+            new_sugg.save()
+        return new_sugg
 
 class CommentForm(forms.Form):
     comment = forms.CharField(label='Comment', max_length=240, validators=[validate_slug])

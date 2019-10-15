@@ -6,6 +6,7 @@
 {% if user.is_authenticated %}
 <h1>Hi {{ request.user.username }}</h1>
 <a href="/logout/" class="button">Logout</a>
+<a href="/suggestion/" class="button">Add Suggestion</a>
 {% else %}
 <a href="/login/" class="button">Login</a>
 {% endif %}
@@ -28,6 +29,7 @@
             <div class="card-info-content">
                 <h3 class="lead">{{ sugg.suggestion }}</h3>
                 <p>Created on: {{ sugg.created_on }}</p>
+                <img v-bind:src="sugg.image" v-bind:alt="sugg.image_description">
                 <a v-bind:href="'/comment/'+ sugg.id+'/'" class="button">comment</a>
             </div>
             {% endverbatim %}
@@ -58,18 +60,11 @@
 </div>
 </span> 
 </div>
-{% if user.is_authenticated %}
-<form action="/" method="post">
-{% csrf_token %}
-{{ form }}
-<input type="submit" class="button" value="Submit">
-</form>
 <!-- <div id="app">
     {% verbatim %}
     {{ message }}
     {% endverbatim %}
 </div> -->
-{% endif %}
 {% endblock %}
 {% block scripts %}
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
