@@ -7,11 +7,19 @@ edition = "2018"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
-[features]
-default = ["console_error_panic_hook"]
+#[features]
+#default = ["console_error_panic_hook"]
 
 [dependencies]
 wasm-bindgen = "0.2"
+reqwest = "0.9.22"
+#yew = { git = "https://github.com/yewstack/yew", features = ["toml", "yaml", "msgpack", "cbor"] }
+
+[dependencies.web-sys]
+version = "0.3"
+features = [
+  "Window","Document", "Element", "HtmlElement","console"
+]
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires
