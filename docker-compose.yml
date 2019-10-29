@@ -7,7 +7,20 @@ services:
    #  image: registry.gitlab.com/csuchico/csuc-cins465/cins465-f19-examples:latest
     volumes:
        - .:/code
-    ports:
-       - 8000:8000
+    expose:
+       - 8000
     # user: "1000:1000"
     command: python /code/mysite/manage.py runserver 0.0.0.0:8000
+
+  nginx:
+    restart: always
+    build: ./nginx/
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+    #  - "443:443"
+#     volumes:
+#        - ./mysite/myapp/static:/static
+    links:
+      - web:web
