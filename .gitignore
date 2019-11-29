@@ -2,7 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+CINS465-c121a*
 # C extensions
 *.so
 
@@ -238,3 +238,4 @@ Temporary Items
 .apdisk
 
 media/
+ssl/

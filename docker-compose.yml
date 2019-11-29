@@ -9,6 +9,8 @@ services:
        - .:/code
     expose:
        - 8000
+    environment:
+       - GOOGLE_APPLICATION_CREDENTIALS=/code/mysite/CINS465-c121a98d2111.json
     # user: "1000:1000"
     command: python /code/mysite/manage.py runserver 0.0.0.0:8000
 
@@ -19,7 +21,7 @@ services:
       - web
     ports:
       - "80:80"
-    #  - "443:443"
+      - "443:443"
 #     volumes:
 #        - ./mysite/myapp/static:/static
     links:

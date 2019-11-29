@@ -25,7 +25,7 @@ SECRET_KEY = '8!2lb9(@(mu4gsjve$kwx*zp&@xaulh9u!be)izj#x2^63eyuv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['35.208.129.144']
+ALLOWED_HOSTS = ['35.208.129.144','alumnimentor.org','www.alumnimentor.org']
 
 LOGIN_REDIRECT_URL = "/"
 
@@ -77,10 +77,18 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+          'ENGINE': 'django.db.backends.postgresql_psycopg2',
+          'NAME': 'django',
+          'USER': 'django',
+          'PASSWORD':'django',
+          'HOST': '35.239.22.52',
+          'PORT': 5432,
+      }
 }
 
 
@@ -123,3 +131,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '/media/')
 MEDIA_URL = '/media/'
+
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+GS_BUCKET_NAME = 'cins465'
